@@ -1,0 +1,68 @@
+/* Set up CSS Variables */
+
+:root {
+  --padding-size: 15px;
+  --foreground: #fff;
+  --background: #f2f2f2;
+}
+
+/* Reset CSS */
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: var(--background);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: var(--padding-size);
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+nav {
+  background-color: var(--foreground);
+  padding: var(--padding-size);
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.grid {
+  margin-top: var(--padding-size);
+  margin-bottom: var(--padding-size);
+}
+
+.left-column, .right-column {
+  background: var(--foreground);
+  padding: var(--padding-size);
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    width: 600px;
+  }
+}
+@media screen and (min-width: 992px) {
+  .container {
+    width: 800px;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .container {
+    width: 1000px;
+  }
+}

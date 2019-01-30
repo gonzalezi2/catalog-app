@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-  return 'This is the home page!'
+  return render_template('index.html')
 
 @app.route('/catalog/')
 def show_catalog():

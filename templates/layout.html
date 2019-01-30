@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - Catalog App</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="container">
+          <a href="{{url_for('index')}}"> Catalog App</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
