@@ -1,13 +1,28 @@
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from db_setup import Base, Category, Item
+
+engine = create_engine('sqlite:///catalog.db')
+
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
+
 @app.route('/')
 def index():
-  return render_template('index.html')
+  categories = session.query(Category).all()
+  # latest_items = session.query(Item)
+  return render_template('index.html', categories = categories)
 
 @app.route('/catalog/')
 def show_catalog():
-  return 'This is the catalog route!'
+  categories = session.query(Category).all()
+  print(categories)
+  # latest_items = session.query(Item)
+  return render_template('index.html', categories = categories)
 
 @app.route('/catalog/<string:category>/', methods=['GET'])
 def show_category(category):

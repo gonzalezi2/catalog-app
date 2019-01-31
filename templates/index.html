@@ -2,15 +2,13 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div class="container">
-<div class="grid">
+<div class="flex-columns">
   <div class="left-column">
     <h2>Catalog</h1>
     <ul>
-      <li>Soccer</li>
-      <li>Basketball</li>
-      <li>Baseball</li>
-      <li>Frisbee</li>
-      <li>Snowboarding</li>
+      {% for cat in categories %}
+        <li>{{cat.name}}</li>
+      {% endfor %}
     </ul>
   </div>
   <div class="right-column">

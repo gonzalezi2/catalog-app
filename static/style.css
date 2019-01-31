@@ -18,7 +18,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
-  margin-bottom: var(--padding-size);
+  margin-bottom: var(--padding-size, 15px);
 }
 
 ul {
@@ -33,7 +33,10 @@ a {
 
 nav {
   background-color: var(--foreground);
-  padding: var(--padding-size);
+}
+
+.logo {
+  font-weight: 900;
 }
 
 .container {
@@ -41,14 +44,60 @@ nav {
   margin: 0 auto;
 }
 
-.grid {
-  margin-top: var(--padding-size);
-  margin-bottom: var(--padding-size);
+.flex-columns {
+  margin-top: var(--padding-size, 15px);
+  margin-bottom: var(--padding-size, 15px);
+  display: flex;
 }
 
 .left-column, .right-column {
   background: var(--foreground);
-  padding: var(--padding-size);
+  padding: var(--padding-size, 15px);
+}
+
+.left-column {
+  flex-grow: 1;
+  margin-right: 15px;
+}
+
+.right-column {
+  flex-grow: 2;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pad-5-0 {
+  padding: 5px 0;
+}
+
+.right {
+  float: right;
+}
+
+button {
+  background: #f2f2f2;
+  border: 0;
+  padding: 10px var(--padding-size, 15px);
+  cursor: pointer;
+  transition: 100ms all linear;
+}
+
+button:hover {
+  background: #f4f4f4;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  background: #f0f0f0;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.15);
+}
+
+button:focus {
+  outline: none;
 }
 
 @media screen and (min-width: 768px) {
