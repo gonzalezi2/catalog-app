@@ -20,13 +20,16 @@ def index():
 @app.route('/catalog/')
 def show_catalog():
   categories = session.query(Category).all()
-  print(categories)
+  recentItems = session.query(Item).all()[10]
   # latest_items = session.query(Item)
-  return render_template('index.html', categories = categories)
+  return render_template('index.html', categories = categories, recentItems = recentItems)
 
 @app.route('/catalog/<string:category>/', methods=['GET'])
 def show_category(category):
-  return 'This is the %s category' % category
+  categories = session.query(Category).all()
+  categoryItems = session.query(Item).join(Category).filter_by(name = category).all()
+  print(categoryItems[0])
+  return render_template('item.html', categories = categories, categoryItems = categoryItems)
 
 @app.route('/catalog/<string:category>/<string:item>/', methods=['GET'])
 def show_item(category, item):

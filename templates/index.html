@@ -14,12 +14,9 @@
   <div class="right-column">
     <h2>Latest Items</h2>
     <ul>
-      <li>Stick</li>
-      <li>Goggles</li>
-      <li>Snowboard</li>
-      <li>Two shinguards</li>
-      <li>Frisbee</li>
-      <li>Bat</li>
+      {% for item in recentItems %}
+        <li>{{item.name}} - {{item.cat_id}}</li>
+      {% endfor %}
     </ul>
   </div>
 </div>
