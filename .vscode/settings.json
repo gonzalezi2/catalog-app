@@ -1,0 +1,15 @@
+{
+  "sqltools.connections": [
+    {
+      "askForPassword": false,
+      "connectionTimeout": 15,
+      "database": "catalog",
+      "dialect": "MySQL",
+      "name": "Catalog",
+      "password": null,
+      "port": null,
+      "server": "127.0.0.1",
+      "username": "vagrant"
+    }
+  ]
+}

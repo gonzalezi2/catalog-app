@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
     <title>{% block title %}{% endblock %} - Catalog App</title>
   </head>
   <body>
@@ -13,7 +14,7 @@
       <nav>
         <div class="container pad-5-0 flex-between">
           <a class="logo" href="{{url_for('index')}}"> Catalog App</a>
-          <button class="right">Login</button>
+          <a class="right" href="{{url_for('showLogin')}}">Login</a>
         </div>
       </nav>
     </header>

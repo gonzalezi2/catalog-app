@@ -6,16 +6,27 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+class User(Base):
+  __tablename__ = 'user'
+  id = Column(Integer, primary_key = True)
+  name = Column(String(250), nullable = False)
+  email = Column(String(250), nullable = False)
+  picture = Column(String(250))
+
+  
 class Category(Base):
   __tablename__ = 'category'
   id = Column(Integer, primary_key = True)
   name = Column(String, nullable = False)
+  user_id = Column(Integer, ForeignKey('user.id'))
+  user = relationship(User)
 
   @property
   def serialize(self):
     return {
       'id': self.id,
-      'name': self.name
+      'name': self.name,
+      'user_id': self.user_id
     }
 
 class Item(Base):
@@ -24,7 +35,9 @@ class Item(Base):
   name = Column(String, nullable = False)
   description = Column(String, nullable = False)
   cat_id = Column(Integer, ForeignKey('category.id'))
+  user_id = Column(Integer, ForeignKey('user.id'))
   category = relationship(Category)
+  user = relationship(User)
 
   @property
   def serialize(self):
@@ -32,9 +45,11 @@ class Item(Base):
       'id': self.id,
       'name': self.name,
       'description': self.description,
-      'cat_id': self.cat_id
+      'cat_id': self.cat_id,
+      'user_id': self.user_id
     }
 
-engine = create_engine('sqlite:///catalog.db')
+
+engine = create_engine('sqlite:///catalogwithusers.db')
 
 Base.metadata.create_all(engine)
