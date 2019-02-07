@@ -35,13 +35,26 @@ nav {
   background-color: var(--foreground);
 }
 
+nav > div {
+  padding: var(--padding-size, 15px);
+}
+
+main {
+  padding: var(--padding-size, 15px) 0;
+}
+
 .logo {
   font-weight: 900;
 }
 
 .container {
-  width: 100%;
+  /* width: 100%; */
   margin: 0 auto;
+}
+
+.content {
+  padding: var(--padding-size, 15px);
+  background: var(--foreground, #fff);
 }
 
 .flex-columns {
@@ -57,7 +70,7 @@ nav {
 
 .left-column {
   flex-grow: 1;
-  margin-right: 15px;
+  margin-right: var(--padding-size);
 }
 
 .right-column {
@@ -68,10 +81,6 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.pad-5-0 {
-  padding: 5px 0;
 }
 
 .right {

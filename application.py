@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, flash
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -40,7 +40,7 @@ def gconnect():
     credentials = oauth_flow.step2_exchange(code)
   except FlowExchangeError:
     response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
-    response.header['Content-Type'] = 'application/json'
+    response.headers['Content-Type'] = 'application/json'
     return response
   access_token = credentials.access_token
   url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
@@ -65,7 +65,8 @@ def gconnect():
   stored_credentials = login_session.get('credentials')
   stored_gplus_id = login_session.get('gplus_id')
   if stored_credentials is not None and gplus_id == stored_gplus_id:
-    response.make_response(json.dumps('Current user is already connected.'), 200)
+    flash('Current user is already connected.')
+    response = make_response(json.dumps('Successfully disconnected'), 200)
     response.headers['Content-Type'] = 'application/json'
 
   login_session['credentials'] = credentials
@@ -79,10 +80,8 @@ def gconnect():
   login_session['username'] = data['name']
   login_session['picture'] = data['picture']
   login_session['email'] = data['email']
-
-  output = ''
-  output += '<h1>Welcome, %s</h1>' % login_session['username']
-  output += '<img src="%s" style="width:300px; height: 300px; border-radius: 50%;">'
+  print(login_session['picture'])
+  output = '<h1>Welcome, %s</h1><img src=\'%s\' style="width:300px; height: 300px; border-radius: 50%%\'>' % (login_session['username'], login_session['picture'])
   return output
 
 @app.route('/disconnect')
@@ -104,8 +103,8 @@ def disconnect():
     del login_session['email']
     del login_session['picture']
 
-    response = make_response(json.dumps('Successfully disconnected.'), 200)
-    response.headers['Content-Type'] = 'application/json'
+    response = make_response(render_template('index.html'), 200)
+    response.headers['Content-Type'] = 'text/html'
     return response
   else:
     response = make_response(
@@ -115,18 +114,19 @@ def disconnect():
     return response
 
 @app.route('/')
-def index():
-  categories = session.query(Category).all()
-  print(categories)
-  # latest_items = session.query(Item)
-  return render_template('index.html', categories = categories)
-
 @app.route('/catalog/')
-def show_catalog():
+def index():
   categories = session.query(Category).all()
   recentItems = session.query(Item).all()
   # latest_items = session.query(Item)
   return render_template('index.html', categories = categories, recentItems = recentItems)
+
+@app.route('/catalog/new', methods=['GET', 'POST'])
+def new_catalog():
+  if request.method == 'GET':
+    return render_template('newCategory.html')
+  else:
+    return 'this is the post route'
 
 @app.route('/catalog/<string:category>/', methods=['GET'])
 def show_category(category):
@@ -141,12 +141,33 @@ def show_item(category, item):
 
 @app.route('/catalog/<string:category>/<string:item>/edit', methods=['GET', 'POST'])
 def edit_item(category, item):
+  if 'username' not in login_session:
+    return render_template('login.html')
   return 'This is the %s category' % category
 
 @app.route('/catalog/<string:category>/<string:item>/delete', methods=['GET', 'POST'])
 def delete_item(category, delete):
+  if 'username' not in login_session:
+    return render_template('login.html')
   return 'This is the %s category' % category
 
+def create_user(login_session):
+  newUser = User(name = login_session['username'], email = login_session['email'], picture = login_session['picture'])
+  session.add(newUser)
+  session.commit()
+  user = session.query(User).filter_by(email = login_session['email']).one()
+  return user.id
+
+def getUserInfo(user_id):
+  user = session.query(User).filter_by(id = user_id).one()
+  return user
+
+def getUserID(email):
+  try:
+    user = session.query(User).filter_by(email = email).one()
+    return user
+  except:
+    return None
   
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

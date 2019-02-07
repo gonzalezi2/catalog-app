@@ -7,19 +7,21 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 <div class="container">
-  <h1>Login using Google</h1>
-  <div id="signinButton">
-      <span class="g-signin"
-        data-scope="openid email"
-        data-clientid="513077865052-htu6hau9q6vdn2crsn888k9vp3ed483u.apps.googleusercontent.com"
-        data-redirecturi="postmessage"
-        data-accesstype="offline"
-        data-cookiepolicy="single_host_origin"
-        data-callback="signInCallback"
-        data-approvalprompt="force">
-      </span>
-    </div>
-    <div id="result"></div>
+  <div class="content">
+      <h1>Login using Google</h1>
+      <div id="signinButton">
+          <span class="g-signin"
+            data-scope="openid email"
+            data-clientid="451131887694-nt2qusiqsfoeer4o3dokcb6jur1s3kpm.apps.googleusercontent.com"
+            data-redirecturi="postmessage"
+            data-accesstype="offline"
+            data-cookiepolicy="single_host_origin"
+            data-callback="signInCallback"
+            data-approvalprompt="force">
+          </span>
+        </div>
+        <div id="result"></div>
+  </div>
     <script>
       function signInCallback(authResult) {
         $('#signinButton').attr('style', 'display: none');
@@ -33,7 +35,7 @@
             if(result) {
               $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
               setTimeout(function(){
-                window.location.href = '/index';
+                window.location.href = '/';
               }, 4000);
             } else if (authResult['error']) {
               $('#result').html('Failed to make a server-side call. Check your configuration and console.');

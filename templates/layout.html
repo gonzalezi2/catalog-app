@@ -1,10 +1,9 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="description" content="">
+    <meta name="description" content="A Catalog App for sports">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     {% block head %}{% endblock %}
     <title>{% block title %}{% endblock %} - Catalog App</title>
@@ -14,7 +13,11 @@
       <nav>
         <div class="container pad-5-0 flex-between">
           <a class="logo" href="{{url_for('index')}}"> Catalog App</a>
-          <a class="right" href="{{url_for('showLogin')}}">Login</a>
+          {% if 'username' is not in session %}
+            <a class="right" href="{{url_for('showLogin')}}">Log In</a>
+          {% else %}
+            <a class="right" href="{{url_for('disconnect')}}">Log Out</a>
+          {% endif %}
         </div>
       </nav>
     </header>
