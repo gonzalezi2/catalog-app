@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, flash
+from flask import Flask, render_template, request, make_response, flash, url_for, redirect
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -22,7 +22,7 @@ DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 @app.route('/login')
-def showLogin():
+def show_login():
   state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
   login_session['state'] = state
   return render_template('login.html', STATE = state)
@@ -77,18 +77,30 @@ def gconnect():
   answer = requests.get(userinfo_url, params = params)
   data = json.loads(answer.text)
 
+  print(data)
+
   login_session['username'] = data['name']
   login_session['picture'] = data['picture']
   login_session['email'] = data['email']
-  print(login_session['picture'])
-  output = '<h1>Welcome, %s</h1><img src=\'%s\' style="width:300px; height: 300px; border-radius: 50%%\'>' % (login_session['username'], login_session['picture'])
+
+  print(login_session)
+
+  user_id = get_user_id(login_session['email'])
+  if not user_id:
+    user_id = create_user(login_session)
+  login_session['user_id'] = user_id
+
+  output = ''
+  output += '<h1>Welcome, %s</h1>' % login_session['username']
+  output += '<img src="%s" style="width:300px; height: 300px; border-radius: 50%%\'>' % login_session['picture']
   return output
 
 @app.route('/disconnect')
 def disconnect():
   credentials = login_session.get('credentials')
-  if credentials is None:
+  if credentials is None:    
     response= make_response(json.dumps('Current user not connected.'), 401)
+    print(response)
     response.headers['Content-Type'] = 'application/json'
     return response
   access_token = credentials.access_token
@@ -118,15 +130,25 @@ def disconnect():
 def index():
   categories = session.query(Category).all()
   recentItems = session.query(Item).all()
+  print(login_session)
   # latest_items = session.query(Item)
   return render_template('index.html', categories = categories, recentItems = recentItems)
 
 @app.route('/catalog/new', methods=['GET', 'POST'])
-def new_catalog():
-  if request.method == 'GET':
-    return render_template('newCategory.html')
+def add_category():
+  if 'username' not in login_session:
+    flash('Please login before attempting to add a new category')
+    return redirect('login.html')
   else:
-    return 'this is the post route'
+    if request.method == 'GET':
+      return render_template('new_category.html')
+    else:
+      print(login_session['user_id'])
+      newCategory = Category(name = request.form['name'], user_id = login_session['user_id'])
+      session.add(newCategory)
+      flash('Successfully added new category: %s' % newCategory.name)
+      session.commit()
+      return redirect(url_for('index'))
 
 @app.route('/catalog/<string:category>/', methods=['GET'])
 def show_category(category):
@@ -134,6 +156,17 @@ def show_category(category):
   #categoryItems = session.query(Item).join(Category).filter_by(name = category).all()
   #print(categoryItems[0])
   return render_template('item.html', categories = categories)
+
+@app.route('/catalog/items/new', methods=['GET', 'POST'])
+def add_item(category, item):
+  if 'username' not in login_session:
+    flash('Please login before attempting to add a new item')
+    return redirect('login.html')
+  else:    
+    if request.method == 'GET':
+      return 'this is the get method'
+    else:
+      return 'This is the %s category' % category
 
 @app.route('/catalog/<string:category>/<string:item>/', methods=['GET'])
 def show_item(category, item):
@@ -156,15 +189,18 @@ def create_user(login_session):
   session.add(newUser)
   session.commit()
   user = session.query(User).filter_by(email = login_session['email']).one()
+  print(user)
   return user.id
 
-def getUserInfo(user_id):
+def get_user_info(user_id):
   user = session.query(User).filter_by(id = user_id).one()
+  print(user)
   return user
 
-def getUserID(email):
+def get_user_id(email):
   try:
     user = session.query(User).filter_by(email = email).one()
+    print(user)
     return user
   except:
     return None

@@ -6,7 +6,16 @@
 {% endblock %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="container">
+<div class="container">  
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
   <div class="content">
       <h1>Login using Google</h1>
       <div id="signinButton">
@@ -36,7 +45,7 @@
               $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
               setTimeout(function(){
                 window.location.href = '/';
-              }, 4000);
+              }, 10000);
             } else if (authResult['error']) {
               $('#result').html('Failed to make a server-side call. Check your configuration and console.');
             }

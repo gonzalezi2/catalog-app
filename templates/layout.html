@@ -14,12 +14,19 @@
         <div class="container pad-5-0 flex-between">
           <a class="logo" href="{{url_for('index')}}"> Catalog App</a>
           {% if 'username' is not in session %}
-            <a class="right" href="{{url_for('showLogin')}}">Log In</a>
+            <a class="right" href="{{url_for('show_login')}}">Log In</a>
           {% else %}
-            <a class="right" href="{{url_for('disconnect')}}">Log Out</a>
+            <div class="right">
+              <a href="{{url_for('disconnect')}}">Log Out</a>
+            </div>
           {% endif %}
         </div>
       </nav>
+      {% if 'username' in session %}
+      <div class="container">
+        <small class="right">Logged in as: {{ session['username'], session['user_id'] }}</small>
+      </div>
+      {% endif %}
     </header>
     <main>
       {% block content %}{% endblock %}
