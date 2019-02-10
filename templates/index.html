@@ -2,11 +2,11 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div class="container">
-{% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
-    <ul class=flashes>
+    <ul class="flashes">
     {% for message in messages %}
-      <li>{{ message }}</li>
+      <li class="{{ category }}"><span>{{ category }}</span> {{ message }}</li>
     {% endfor %}
     </ul>
   {% endif %}

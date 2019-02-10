@@ -4,6 +4,8 @@
   --padding-size: 15px;
   --foreground: #fff;
   --background: #f2f2f2;
+  --success-color: #1abc9c;
+  --error-color: #e74c3c;
 }
 
 /* Reset CSS */
@@ -113,6 +115,26 @@ button:active, .button:active {
 
 button:focus, .button:focus {
   outline: none;
+}
+
+
+.flashes li {
+  margin: 10px 0;
+  padding: 15px;
+  color: #fff;
+}
+
+.flashes li span{
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.flashes li.success {
+  background-color: var(--success-color, #1abc9c);
+}
+
+.flashes li.error {
+  background-color: var(--error-color, #e74c3c);
 }
 
 @media screen and (min-width: 768px) {
