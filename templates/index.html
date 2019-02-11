@@ -5,7 +5,7 @@
 {% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
     <ul class="flashes">
-    {% for message in messages %}
+    {% for category, message in messages %}
       <li class="{{ category }}"><span>{{ category }}</span> {{ message }}</li>
     {% endfor %}
     </ul>
@@ -27,7 +27,7 @@
     <h2>Latest Items</h2>
     <ul>
       {% for item in recentItems %}
-        <li>{{item.name}} - {{item.cat_id}}</li>
+        <li>{{item.name}} - <small>{{item.category.name}}</small></li>
       {% endfor %}
     </ul>
     {% if 'username' in session %}

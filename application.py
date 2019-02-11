@@ -34,8 +34,8 @@ def gconnect():
       response = make_response(json.dumps('Invalid state parameter.'), 401)
       response.headers['Content-Type'] = 'application/json'
       return response
-  # Obtain authorization code, now compatible with Python3
-  # code = request.data.decode('utf-8')
+      
+  #code = request.data.decode('utf-8')
   code = request.data
 
   try:
@@ -98,13 +98,14 @@ def gconnect():
   answer = requests.get(userinfo_url, params=params)
 
   data = answer.json()
+  print(data)
 
   login_session['username'] = data['name']
   login_session['picture'] = data['picture']
   login_session['email'] = data['email']
 
   # see if user exists, if it doesn't make a new one
-  user_id = get_user_id(login_session['email'])
+  user_id = get_user_id(data["email"])
   if not user_id:
       user_id = create_user(login_session)
   login_session['user_id'] = user_id
@@ -121,19 +122,17 @@ def gconnect():
 
 @app.route('/disconnect')
 def disconnect():
-  credentials = login_session.get('credentials')
-  if credentials is None:    
+  access_token = login_session.get('access_token')
+  if access_token is None:    
     response= make_response(json.dumps('Current user not connected.'), 401)
-    print(response)
     response.headers['Content-Type'] = 'application/json'
     return response
-  access_token = credentials.access_token
   url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
   h = httplib2.Http()
   result = h.request(url, 'GET')[0]
 
   if result['status'] == '200':
-    del login_session['credentials']
+    del login_session['access_token']
     del login_session['gplus_id']
     del login_session['username']
     del login_session['email']
@@ -141,11 +140,14 @@ def disconnect():
 
     response = make_response(render_template('index.html'), 200)
     response.headers['Content-Type'] = 'text/html'
+    flash(u'You have successfully been logged out', 'success')
     return response
   else:
     response = make_response(
       json.dumps('Failed to revoke token for given user.'), 400
     )
+    flash(u'Failed to revoke token for given user.', 'error')
+    response = make_response(render_template('index.html'), 400)
     response.headers['Content-Type'] = 'application/json'
     return response
 
@@ -153,8 +155,7 @@ def disconnect():
 @app.route('/catalog/')
 def index():
   categories = session.query(Category).all()
-  recentItems = session.query(Item).all()
-  print(login_session)
+  recentItems = session.query(Item).join(Category, Item.cat_id == Category.id).all()
   # latest_items = session.query(Item)
   return render_template('index.html', categories = categories, recentItems = recentItems)
 
@@ -162,15 +163,14 @@ def index():
 def add_category():
   if 'username' not in login_session:
     flash('Please login before attempting to add a new category')
-    return redirect('login.html')
+    return redirect('/login')
   else:
     if request.method == 'GET':
       return render_template('new_category.html')
     else:
-      print(login_session['user_id'])
       newCategory = Category(name = request.form['name'], user_id = login_session['user_id'])
       session.add(newCategory)
-      flash('Successfully added new category: %s' % newCategory.name)
+      flash('Successfully added new category: %s' % newCategory.name, 'success')
       session.commit()
       return redirect(url_for('index'))
 
@@ -182,15 +182,24 @@ def show_category(category):
   return render_template('item.html', categories = categories)
 
 @app.route('/catalog/items/new', methods=['GET', 'POST'])
-def add_item(category, item):
+def add_item():
   if 'username' not in login_session:
     flash('Please login before attempting to add a new item')
-    return redirect('login.html')
+    return redirect('/login')
   else:    
     if request.method == 'GET':
-      return 'this is the get method'
+      categories = session.query(Category).all()
+      return render_template('new_item.html', categories = categories)
     else:
-      return 'This is the %s category' % category
+      newItem = Item(
+        name = request.form['name'],
+        description = request.form['description'],
+        cat_id = request.form['category'],
+        user_id = login_session['user_id'])
+      session.add(newItem)
+      flash('Successfully added new category: %s' % newItem.name, 'success')
+      session.commit()
+      return redirect(url_for('index'))
 
 @app.route('/catalog/<string:category>/<string:item>/', methods=['GET'])
 def show_item(category, item):
@@ -205,7 +214,7 @@ def edit_item(category, item):
 @app.route('/catalog/<string:category>/<string:item>/delete', methods=['GET', 'POST'])
 def delete_item(category, delete):
   if 'username' not in login_session:
-    return render_template('login.html')
+    return render_template('/login')
   return 'This is the %s category' % category
 
 def create_user(login_session):
@@ -218,14 +227,12 @@ def create_user(login_session):
 
 def get_user_info(user_id):
   user = session.query(User).filter_by(id = user_id).one()
-  print(user)
   return user
 
 def get_user_id(email):
   try:
     user = session.query(User).filter_by(email = email).one()
-    print(user)
-    return user
+    return user.id
   except:
     return None
   
