@@ -10,7 +10,7 @@
 
 /* Reset CSS */
 
-body {
+html, body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -45,16 +45,21 @@ main {
   padding: var(--padding-size, 15px) 0;
 }
 
+hr  {
+  border: 1px solid #eee;
+}
+
 /* Styles */
 
-input {
-  border: 0;
+input, select, textarea {
+  border: 1px solid #ddd;
   display: block;
-  max-width: 350px;
+  max-width: 600px;
   width: 100%;
   padding: 10px;
   background: var(--background);
   margin: 5px 0;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -105,7 +110,7 @@ input {
 
 button, .button {
   background: #f2f2f2;
-  border: 0;
+  border: 1px solid #ddd;
   padding: 10px var(--padding-size, 15px);
   cursor: pointer;
   transition: 100ms all linear;

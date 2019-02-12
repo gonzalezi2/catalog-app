@@ -3,12 +3,12 @@
 {% block content %}
 <div class="container">
   <div class="content">
-      <h2>Add Item</h2>
+    <h2>Edit Item</h2>
     <form action="#" method="POST">
       <label for="name">Name</label>
-      <input type="text" name="name" id="name">
+      <input type="text" name="name" id="name" value="{{ item.name }}">
       <label for="description">Description</label>
-      <textarea name="description" id="description" cols="30" rows="10"></textarea>
+      <textarea name="description" id="description" cols="30" rows="10">{{ item.description }}</textarea>
       <label for="category">Category</label>
       <select name="category" id="category">
         <option selected disabled>Select a Category</option>
@@ -16,9 +16,15 @@
           <option value="{{ c.id }}">{{ c.name }}</option>
         {% endfor %}
       </select>
-
+      <br>
       <button>Submit</button>
     </form>
   </div>
 </div>
+<script>
+  (function selectCategory() {
+    let select = document.getElementById('category');
+    select.value = '{{ item.cat_id }}'
+  })();
+</script>
 {% endblock %}

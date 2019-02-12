@@ -27,7 +27,7 @@
     <h2>Latest Items</h2>
     <ul>
       {% for item in recentItems %}
-        <li>{{item.name}} - <small>{{item.category.name}}</small></li>
+        <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li>
       {% endfor %}
     </ul>
     {% if 'username' in session %}

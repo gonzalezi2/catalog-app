@@ -138,16 +138,13 @@ def disconnect():
     del login_session['email']
     del login_session['picture']
 
-    response = make_response(render_template('index.html'), 200)
-    response.headers['Content-Type'] = 'text/html'
-    flash(u'You have successfully been logged out', 'success')
-    return response
+    # response = make_response(json.dumps('Successfully disconnected.'), 200)
+    # response.headers['Content-Type'] = 'application/json'
+    # return response
+    flash(u'Successfully disconnected', 'success')
+    return redirect('/')
   else:
-    response = make_response(
-      json.dumps('Failed to revoke token for given user.'), 400
-    )
-    flash(u'Failed to revoke token for given user.', 'error')
-    response = make_response(render_template('index.html'), 400)
+    response = make_response(json.dumps('Failed to revoke token for given user.'), 400)
     response.headers['Content-Type'] = 'application/json'
     return response
 
@@ -181,6 +178,19 @@ def show_category(category):
   #print(categoryItems[0])
   return render_template('item.html', categories = categories)
 
+@app.route('/catalog/<string:category>/delete', methods=['GET', 'POST'])
+def delete_category(category):
+  if 'username' not in login_session:
+    return render_template('/login')
+  if request.method == 'GET':
+    return render_template('delete_category.html', category = category)
+  else:
+    deleteCategory = session.query(category).filter_by(name = category).one()
+    session.delete(deleteCategory)
+    flash('Successfully deleted category: %s' % deleteCategory.name, 'success')
+    session.commit()
+    return redirect(url_for('index'))
+
 @app.route('/catalog/items/new', methods=['GET', 'POST'])
 def add_item():
   if 'username' not in login_session:
@@ -203,19 +213,41 @@ def add_item():
 
 @app.route('/catalog/<string:category>/<string:item>/', methods=['GET'])
 def show_item(category, item):
-  return 'This is the %s category %s' % (category, item)
+  showItem = session.query(Item).filter_by(name = item).join(Category, Item.cat_id == Category.id).one()
+  return render_template('item.html', item = showItem)
 
 @app.route('/catalog/<string:category>/<string:item>/edit', methods=['GET', 'POST'])
 def edit_item(category, item):
   if 'username' not in login_session:
     return render_template('login.html')
-  return 'This is the %s category' % category
+  if request.method == 'GET':
+    categories = session.query(Category).all()
+    editItem = session.query(Item).filter_by(name = item).join(Category, Item.cat_id == Category.id).one()
+    return render_template('edit_item.html', categories = categories, item = editItem)
+  else:
+    editedItem = session.query(Item).filter_by(name = item).one()
+    if editedItem.name != request.form['name']:
+      editedItem.name = request.form['name']
+    if editedItem.description != request.form['description']:
+      editedItem.description = request.form['description']
+    if editedItem.cat_id != request.form['category']:
+      editedItem.cat_id = request.form['category']
+    session.commit()
+    flash('Successfully edited item: %s' % editedItem.name, 'success')
+    return redirect(url_for('index'))
 
 @app.route('/catalog/<string:category>/<string:item>/delete', methods=['GET', 'POST'])
-def delete_item(category, delete):
+def delete_item(category, item):
   if 'username' not in login_session:
     return render_template('/login')
-  return 'This is the %s category' % category
+  if request.method == 'GET':
+    return render_template('delete_item.html', item = item)
+  else:
+    deleteItem = session.query(Item).filter_by(name = item).one()
+    session.delete(deleteItem)
+    flash('Successfully deleted item: %s' % deleteItem.name, 'success')
+    session.commit()
+    return redirect(url_for('index'))
 
 def create_user(login_session):
   newUser = User(name = login_session['username'], email = login_session['email'], picture = login_session['picture'])

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="content">
+    <h2>Delete Category</h2>
+    <p>Are you sure you want to delete {{ category }}?</p>
+    <form action="#" method="POST">
+      <button>Yes, Delete {{ category }}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
