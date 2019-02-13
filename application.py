@@ -171,12 +171,12 @@ def add_category():
       session.commit()
       return redirect(url_for('index'))
 
-@app.route('/catalog/<string:category>/', methods=['GET'])
+@app.route('/catalog/<string:category>/items', methods=['GET'])
 def show_category(category):
   categories = session.query(Category).all()
-  #categoryItems = session.query(Item).join(Category).filter_by(name = category).all()
+  categoryItems = session.query(Item).filter_by(cat_id = request.args.get('cat_id') ).join(Category, Item.cat_id == Category.id).all()
   #print(categoryItems[0])
-  return render_template('item.html', categories = categories)
+  return render_template('category.html', currentCategory = category, categories = categories, items = categoryItems)
 
 @app.route('/catalog/<string:category>/delete', methods=['GET', 'POST'])
 def delete_category(category):
