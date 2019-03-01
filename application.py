@@ -5,22 +5,21 @@ import json
 import httplib2
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 from flask import session as login_session
-from db_setup import Base, Category, Item, User
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+# from db_setup import Base, Category, Item, User
+# from sqlalchemy.orm import sessionmaker
+# from sqlalchemy import create_engine
 from flask import Flask, render_template, request, make_response, flash, url_for, redirect, jsonify
 app = Flask(__name__)
-app.config['JSON_SORT_KEYS'] = False
 
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
-    'web']['client_id']
+# CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+#     'web']['client_id']
 
-engine = create_engine('sqlite:///catalogwithusers.db')
+# engine = create_engine('sqlite:///catalogwithusers.db')
 
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+# Base.metadata.bind = engine
+# DBSession = sessionmaker(bind=engine)
+# session = DBSession()
 
 
 @app.route('/login')
@@ -158,10 +157,25 @@ def disconnect():
 @app.route('/')
 @app.route('/catalog/')
 def index():
-  categories = session.query(Category).all()
-  recentItems = session.query(Item).join(
-      Category, Item.cat_id == Category.id).all()
-  # latest_items = session.query(Item)
+  # categories = session.query(Category).all()
+  # recentItems = session.query(Item).join(
+  #     Category, Item.cat_id == Category.id).all()
+  categories = [
+    {"name": "Company 1", "id": 1},
+    {"name": "Company2", "id": 2}
+  ]
+  recentItems = [
+    {
+      "name": "Item 1",
+      "description": "This is an item",
+      "id": 1
+    },
+    {
+      "name": "Item 2",
+      "description": "This is an item 2",
+      "id": 2
+    }
+  ]
   return render_template('index.html', categories=categories, recentItems=recentItems)
 
 
