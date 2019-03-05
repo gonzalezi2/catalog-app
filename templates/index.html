@@ -16,9 +16,10 @@
     <h2>Categories</h1>
     <ul>
       {% for cat in categories %}
-        <!-- <li><a href="{{ url_for('show_category', category = cat.name, cat_id = cat.id)}}">{{cat.name}}</a></li> -->
         <li>{{ cat }}</li>
       {% endfor %}
+        <!-- <li><a href="{{ url_for('show_category', category = cat.name, cat_id = cat.id)}}">{{cat.name}}</a></li> -->
+
     </ul>
     <!-- {% if 'username' in session %}
       <a class="button small" href="{{ url_for('add_category') }}">Add Category +</a>
@@ -28,9 +29,10 @@
     <h2>Latest Items</h2>
     <ul>
       {% for item in recentItems %}
-        <!-- <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li> -->
         <li>{{ item }}</li>
       {% endfor %}
+        <!-- <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li> -->
+
     </ul>
     <!-- {% if 'username' in session %}
         <a class="button small" href="{{ url_for('add_item') }}">Add Item +</a>
