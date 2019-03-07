@@ -3,23 +3,23 @@ import random
 import requests
 import json
 import httplib2
-# from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 from flask import session as login_session
-# from db_setup import Base, Category, Item, User
-# from sqlalchemy.orm import sessionmaker
-# from sqlalchemy import create_engine
+from db_setup import Base, Category, Item, User
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 from flask import Flask, render_template, request, make_response, flash, url_for, redirect, jsonify
 app = Flask(__name__)
 
 
-# CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
-#     'web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
 
-# engine = create_engine('sqlite:///catalogwithusers.db')
+engine = create_engine('postgresql+psycopg2://catalog@/catalogdb')
 
-# Base.metadata.bind = engine
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 @app.route('/login')
