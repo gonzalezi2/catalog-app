@@ -12,10 +12,10 @@ from flask import Flask, render_template, request, make_response, flash, url_for
 app = Flask(__name__)
 
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+CLIENT_ID = json.loads(open('/var/www/catalog/client_secrets.json', 'r').read())[
     'web']['client_id']
 
-engine = create_engine('postgresql+psycopg2://catalog@/catalogdb')
+engine = create_engine('postgresql+psycopg2://catalog:linuxSecret@/catalogdb')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
