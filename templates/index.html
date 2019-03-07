@@ -16,31 +16,23 @@
     <h2>Categories</h1>
     <ul>
       {% for cat in categories %}
-        <li>{{ cat }}</li>
-      {% endfor %}
-      {#
         <li><a href="{{ url_for('show_category', category = cat.name, cat_id = cat.id)}}">{{cat.name}}</a></li>
-      #}
+      {% endfor %}
     </ul>
-    <!-- {% if 'username' in session %}
+    {% if 'username' in session %}
       <a class="button small" href="{{ url_for('add_category') }}">Add Category +</a>
-    {% endif %} -->
+    {% endif %}
   </div>
   <div class="right-column">
     <h2>Latest Items</h2>
     <ul>
       {% for item in recentItems %}
-        <li>{{ item }}</li>
+      <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li>
       {% endfor %}
-      {#
-        <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li>
-      #}
     </ul>
-    {#
     {% if 'username' in session %}
         <a class="button small" href="{{ url_for('add_item') }}">Add Item +</a>
     {% endif %}
-    #}
   </div>
 </div>
 </div>

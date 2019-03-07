@@ -12,7 +12,7 @@ from flask import Flask, render_template, request, make_response, flash, url_for
 app = Flask(__name__)
 
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+CLIENT_ID = json.loads(open('/var/www/catalog/client_secrets.json', 'r').read())[
     'web']['client_id']
 
 engine = create_engine('postgresql+psycopg2://catalog@/catalogdb')
@@ -157,25 +157,9 @@ def disconnect():
 @app.route('/')
 @app.route('/catalog/')
 def index():
-  # categories = session.query(Category).all()
-  # recentItems = session.query(Item).join(
-  #     Category, Item.cat_id == Category.id).all()
-  categories = [
-    {"name": "Company 1", "id": 1},
-    {"name": "Company2", "id": 2}
-  ]
-  recentItems = [
-    {
-      "name": "Item 1",
-      "description": "This is an item",
-      "id": 1
-    },
-    {
-      "name": "Item 2",
-      "description": "This is an item 2",
-      "id": 2
-    }
-  ]
+  categories = session.query(Category).all()
+  recentItems = session.query(Item).join(
+      Category, Item.cat_id == Category.id).all()
   return render_template('index.html', categories=categories, recentItems=recentItems)
 
 
