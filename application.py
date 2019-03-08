@@ -29,6 +29,7 @@ def show_login():
   state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                   for x in range(32))
   login_session['state'] = state
+  print(state)
   return render_template('login.html', STATE=state)
 
 
@@ -45,7 +46,8 @@ def gconnect():
 
   try:
       # Upgrade the authorization code into a credentials object
-      oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+      oauth_flow = flow_from_clientsecrets('/var/www/catalog/client_secrets.json', scope='')
+      print(oauth_flow)
       oauth_flow.redirect_uri = 'postmessage'
       credentials = oauth_flow.step2_exchange(code)
   except FlowExchangeError:
