@@ -1,3 +1,4 @@
+import os
 import string
 import random
 import requests
@@ -10,13 +11,13 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from flask import Flask, render_template, request, make_response, flash, url_for, redirect, jsonify
 app = Flask(__name__)
-app.config['JSON_SORT_KEYS'] = False
+app.secret_key = os.urandom(24)
+print(__name__)
 
-
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+CLIENT_ID = json.loads(open('/var/www/catalog/client_secrets.json', 'r').read())[
     'web']['client_id']
 
-engine = create_engine('sqlite:///catalogwithusers.db')
+engine = create_engine('postgresql+psycopg2://catalog:linuxSecret@/catalogdb')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -28,6 +29,7 @@ def show_login():
   state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                   for x in range(32))
   login_session['state'] = state
+  print(state)
   return render_template('login.html', STATE=state)
 
 
@@ -44,7 +46,8 @@ def gconnect():
 
   try:
       # Upgrade the authorization code into a credentials object
-      oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+      oauth_flow = flow_from_clientsecrets('/var/www/catalog/client_secrets.json', scope='')
+      print(oauth_flow)
       oauth_flow.redirect_uri = 'postmessage'
       credentials = oauth_flow.step2_exchange(code)
   except FlowExchangeError:
@@ -161,7 +164,6 @@ def index():
   categories = session.query(Category).all()
   recentItems = session.query(Item).join(
       Category, Item.cat_id == Category.id).all()
-  # latest_items = session.query(Item)
   return render_template('index.html', categories=categories, recentItems=recentItems)
 
 
@@ -306,6 +308,7 @@ def get_user_id(email):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
+    #app.secret_key = 'super_secret_key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    #app.run(host='0.0.0.0', port=5000)

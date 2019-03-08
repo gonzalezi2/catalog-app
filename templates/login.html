@@ -2,7 +2,8 @@
 {% block head %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
 </script>
-<script src="//apis.google.com/js/platform.js?onload=start"> </script>
+<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+  </script>
 {% endblock %}
 {% block title %}Login{% endblock %}
 {% block content %}
@@ -18,40 +19,60 @@
   {% endwith %}
   <div class="content">
       <h1>Login using Google</h1>
-      <div id="signinButton">
-          <span class="g-signin"
-            data-scope="openid email"
-            data-clientid="451131887694-nt2qusiqsfoeer4o3dokcb6jur1s3kpm.apps.googleusercontent.com"
-            data-redirecturi="postmessage"
-            data-accesstype="offline"
-            data-cookiepolicy="single_host_origin"
-            data-callback="signInCallback"
-            data-approvalprompt="force">
-          </span>
-        </div>
-        <div id="result"></div>
+      <!-- Add where you want your sign-in button to render -->
+      <!-- Use an image that follows the branding guidelines in a real app -->
+      <button id="signinButton">Sign in with Google</button>
+      <script>
+        $('#signinButton').click(function() {
+          // signInCallback defined in step 6.
+          auth2.grantOfflineAccess().then(signInCallback);
+        });
+      </script>
+      <div id="result"></div>
   </div>
     <script>
-      function signInCallback(authResult) {
+        function start() {
+          gapi.load('auth2', function() {
+            auth2 = gapi.auth2.init({
+              client_id: '451131887694-2b2kth5qb3ikj9bqjhg2fhvjasujnslg.apps.googleusercontent.com'
+              // Scopes to request in addition to 'profile' and 'email'
+              //scope: 'additional_scope'
+            });
+          });
+        }
+      </script>
+      <!-- Last part of BODY element in file index.html -->
+<script>
+    function signInCallback(authResult) {
+      if (authResult['code']) {
+    
+        // Hide the sign-in button now that the user is authorized, for example:
         $('#signinButton').attr('style', 'display: none');
+    
+        // Send the code to the server
         $.ajax({
           type: 'POST',
           url: '/gconnect?state={{STATE}}',
-          processData: false,
+          // Always include an `X-Requested-With` header in every AJAX request,
+          // to protect against CSRF attacks.
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
           contentType: 'application/octet-stream; charset=utf-8',
-          data: authResult['code'],
           success: function(result) {
-            if(result) {
+            console.log(result);
               $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
               setTimeout(function(){
                 window.location.href = '/';
               }, 5000);
-            } else if (authResult['error']) {
-              $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-            }
-          }
-        })
+          },
+          processData: false,
+          data: authResult['code']
+        });
+      } else {
+        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
       }
+    }
     </script>
 </div>
 {% endblock %}

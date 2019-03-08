@@ -18,6 +18,11 @@ If you are using a linux or Mac system, you can use your OS' terminal applicatio
 
 If you are a windows users, you can install Git Bash terminal from [here](https://git-scm.com/downloads).
 
+### Using a virtualenv
+In order to keep separate projects with their own dependencies from creating compatibility issues,
+best practice indicates that we should use a virtual environment to handle the differences. For this project,
+I created a catalogEnv on which we will install all the different packages we'll need.
+
 ### Install Python 3
 This project requires Python 3 to run the code. You can install it [here under Download](https://www.python.org/download/releases/3.0/#download). You can also follow the ["Installing Python"](https://docs.python.org/3.0/using/windows.html#installing-python) guide.
 

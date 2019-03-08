@@ -1,2 +1,5 @@
+client_secrets.json
 .vagrant/*
 Vagrantfile
+requirements.txt
+/venv/*

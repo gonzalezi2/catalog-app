@@ -27,11 +27,11 @@
     <h2>Latest Items</h2>
     <ul>
       {% for item in recentItems %}
-        <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li>
+      <li><a href="{{ url_for('show_item', category = item.category.name, item = item.name )}}">{{item.name}}</a> - <small>{{item.category.name}}</small></li>
       {% endfor %}
     </ul>
     {% if 'username' in session %}
-      <a class="button small" href="{{ url_for('add_item') }}">Add Item +</a>
+        <a class="button small" href="{{ url_for('add_item') }}">Add Item +</a>
     {% endif %}
   </div>
 </div>
