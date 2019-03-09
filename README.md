@@ -11,11 +11,26 @@ system for data manipulation.
 ## Connecting to the server using SSH
 
 The serve requires RSA authentication to connect through SSH. The information to connect is located below:
-*Server IP Address*: 3.18.80.16
-*SSH Port*: 2200
+
+**Server IP Address**: 3.18.80.16
+
+**SSH Port**: 2200
 
 ## Accessing the Application
 You can find the running application by navigating to http://www.somecatalog.tk/
+
+## Resources I Used
+[How To Deploy a Flask Application on an Ubuntu VPS](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+
+[Deploy Django on Apache with Virtualenv and mod_wsgi](https://www.thecodeship.com/deployment/deploy-django-apache-virtualenv-and-mod_wsgi/)
+
+[Creating a DNS zone to manage your domain’s DNS records in Amazon Lightsail](https://lightsail.aws.amazon.com/ls/docs/en/articles/lightsail-how-to-create-dns-entry)
+
+[Google Sign-In for server-side apps](https://developers.google.com/identity/sign-in/web/server-side-flow)
+
+And most of all...
+
+Udacity's own Linux course for setting up the linux with users, key-based authentication, firewalls, etc.
 
 ## Installed Software & other configuration
 
